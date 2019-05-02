@@ -42,6 +42,7 @@ class ZabbixApi
     # @option opts [String] :http_user A user for basic auth.(optional)
     # @option opts [String] :http_password A password for basic auth.(optional)
     # @option opts [Integer] :timeout Set timeout for requests in seconds.(default: 60)
+		# @option opts [Boolean] :skip_check When true, skips the API version check. (default: false)
     #
     # @return [ZabbixApi::Client]
     def initialize(options = {})
@@ -53,8 +54,8 @@ class ZabbixApi
         @proxy_user, @proxy_pass = @proxy_uri.userinfo.split(/:/) if @proxy_uri.userinfo
       end
 
-      unless api_version =~ /(2\.4|3\.[024]|4\.0)\.\d+/
-        raise ApiError.new("Zabbix API version: #{api_version} is not support by this version of zabbixapi")
+      unless options[:skip_check] || api_version =~ /(2\.4|3\.[024]|4\.0)\.\d+/
+        raise ApiError.new("Zabbix API version: #{api_version} is not supported by this version of zabbixapi")
       end
 
       @auth_hash = auth
