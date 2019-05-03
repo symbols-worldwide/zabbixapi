@@ -48,7 +48,13 @@ class ZabbixApi
     # @return [Integer] Zabbix object id
     def create_or_update(data)
       httptestid = get_id(name: data[:name], hostid: data[:hostid])
-      httptestid ? update(data.merge(httptestid: httptestid)) : create(data)
+			if httptestid
+				new_data = data.merge(httptestid: httptestid)
+				new_data.delete(:hostid)
+				update(new_data)
+			else
+				create(data)
+			end
     end
   end
 end
